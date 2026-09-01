@@ -1,0 +1,29 @@
+// use prisma-next
+
+model User {
+  id            String      @id
+  email         String      @unique
+  password_hash String?
+  created_at    DateTime    @default(now())
+  updated_at    temporal.updatedAt()
+
+  slips Slip[]
+
+  @@map("users")
+}
+
+model Slip {
+  id             String      @id
+  user_id        String
+  income_amount  Float
+  tax_deducted   Float
+  received_date  DateTime
+  slip_image_url String
+  created_at     DateTime    @default(now())
+  updated_at     temporal.updatedAt()
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("slips")
+}
