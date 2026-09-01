@@ -16,7 +16,7 @@ export class SlipsService {
    * Create a new slip, scoped to the authenticated user.
    */
   async create(userId: string, dto: CreateSlipDto) {
-    const slip = await this.prisma.db.orm.Slip.create({
+    const slip = await this.prisma.db.orm.public.Slip.create({
       id: crypto.randomUUID(),
       user_id: userId,
       income_amount: Number(dto.income_amount),
@@ -33,7 +33,7 @@ export class SlipsService {
    * Data isolation: strictly filtered by user_id.
    */
   async findAll(userId: string) {
-    const slips = await this.prisma.db.orm.Slip
+    const slips = await this.prisma.db.orm.public.Slip
       .where({ user_id: userId })
       .orderBy((slip) => slip.received_date.desc())
       .all();
@@ -45,7 +45,7 @@ export class SlipsService {
    * Find a single slip by ID, strictly scoped to the authenticated user.
    */
   async findOne(userId: string, slipId: string) {
-    const slip = await this.prisma.db.orm.Slip
+    const slip = await this.prisma.db.orm.public.Slip
       .where({ id: slipId })
       .first();
 
@@ -82,7 +82,7 @@ export class SlipsService {
       data.slip_image_url = dto.slip_image_url;
     }
 
-    const updatedSlip = await this.prisma.db.orm.Slip
+    const updatedSlip = await this.prisma.db.orm.public.Slip
       .where({ id: slipId })
       .update(data);
 
@@ -96,7 +96,7 @@ export class SlipsService {
     // Verify ownership first
     await this.findOne(userId, slipId);
 
-    await this.prisma.db.orm.Slip
+    await this.prisma.db.orm.public.Slip
       .where({ id: slipId })
       .delete();
 

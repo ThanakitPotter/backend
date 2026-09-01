@@ -1,77 +1,77 @@
 {
   "schemaVersion": "1",
   "targetFamily": "sql",
-  "target": "sqlite",
-  "profileHash": "260b8608d1aacaf1f690779a6cff39a12947c599597c5ba464ca75b9e775df53",
+  "target": "postgres",
+  "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
     "slips": {
       "model": "Slip",
-      "namespace": "__unbound__"
+      "namespace": "public"
     },
     "users": {
       "model": "User",
-      "namespace": "__unbound__"
+      "namespace": "public"
     }
   },
   "domain": {
     "namespaces": {
-      "__unbound__": {
+      "public": {
         "models": {
           "Slip": {
             "fields": {
               "created_at": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/datetime@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               },
               "id": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "income_amount": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/real@1",
+                  "codecId": "pg/float8@1",
                   "kind": "scalar"
                 }
               },
               "received_date": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/datetime@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               },
               "slip_image_url": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "tax_deducted": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/real@1",
+                  "codecId": "pg/float8@1",
                   "kind": "scalar"
                 }
               },
               "updated_at": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/datetime@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               },
               "user_id": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               }
@@ -89,7 +89,7 @@
                 },
                 "to": {
                   "model": "User",
-                  "namespace": "__unbound__"
+                  "namespace": "public"
                 }
               }
             },
@@ -120,7 +120,7 @@
                   "column": "user_id"
                 }
               },
-              "namespaceId": "__unbound__",
+              "namespaceId": "public",
               "table": "slips"
             }
           },
@@ -129,35 +129,35 @@
               "created_at": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/datetime@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               },
               "email": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "id": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "password_hash": {
                 "nullable": true,
                 "type": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "updated_at": {
                 "nullable": false,
                 "type": {
-                  "codecId": "sqlite/datetime@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               }
@@ -175,7 +175,7 @@
                 },
                 "to": {
                   "model": "Slip",
-                  "namespace": "__unbound__"
+                  "namespace": "public"
                 }
               }
             },
@@ -197,7 +197,7 @@
                   "column": "updated_at"
                 }
               },
-              "namespaceId": "__unbound__",
+              "namespaceId": "public",
               "table": "users"
             }
           }
@@ -207,52 +207,52 @@
   },
   "storage": {
     "namespaces": {
-      "__unbound__": {
+      "public": {
         "entries": {
           "table": {
             "slips": {
               "columns": {
                 "created_at": {
-                  "codecId": "sqlite/datetime@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "default": {
                     "expression": "now()",
                     "kind": "function"
                   },
-                  "nativeType": "text",
+                  "nativeType": "timestamptz",
                   "nullable": false
                 },
                 "id": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
                 },
                 "income_amount": {
-                  "codecId": "sqlite/real@1",
-                  "nativeType": "real",
+                  "codecId": "pg/float8@1",
+                  "nativeType": "float8",
                   "nullable": false
                 },
                 "received_date": {
-                  "codecId": "sqlite/datetime@1",
-                  "nativeType": "text",
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
                   "nullable": false
                 },
                 "slip_image_url": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
                 },
                 "tax_deducted": {
-                  "codecId": "sqlite/real@1",
-                  "nativeType": "real",
+                  "codecId": "pg/float8@1",
+                  "nativeType": "float8",
                   "nullable": false
                 },
                 "updated_at": {
-                  "codecId": "sqlite/datetime@1",
-                  "nativeType": "text",
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
                   "nullable": false
                 },
                 "user_id": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
                 }
@@ -264,14 +264,14 @@
                     "columns": [
                       "user_id"
                     ],
-                    "namespaceId": "__unbound__",
+                    "namespaceId": "public",
                     "tableName": "slips"
                   },
                   "target": {
                     "columns": [
                       "id"
                     ],
-                    "namespaceId": "__unbound__",
+                    "namespaceId": "public",
                     "tableName": "users"
                   }
                 }
@@ -296,32 +296,32 @@
             "users": {
               "columns": {
                 "created_at": {
-                  "codecId": "sqlite/datetime@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "default": {
                     "expression": "now()",
                     "kind": "function"
                   },
-                  "nativeType": "text",
+                  "nativeType": "timestamptz",
                   "nullable": false
                 },
                 "email": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
                 },
                 "id": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
                 },
                 "password_hash": {
-                  "codecId": "sqlite/text@1",
+                  "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": true
                 },
                 "updated_at": {
-                  "codecId": "sqlite/datetime@1",
-                  "nativeType": "text",
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
                   "nullable": false
                 }
               },
@@ -342,42 +342,43 @@
             }
           }
         },
-        "id": "__unbound__"
+        "id": "public",
+        "kind": "postgres-schema"
       }
     },
-    "storageHash": "7a97ca118f1465ecff38bfa003d49592d979e1e8b8e220ff97d6bfe00e5ca639"
+    "storageHash": "338e8ca27d7bd18b3239820f794f698f8629ad7575742fb63c441f4f96cd5e42"
   },
   "execution": {
-    "executionHash": "a11c0577bd5d92592c59a700feadfc89ff8a1c276b936cdf3b689ac44c49f00a",
+    "executionHash": "f66a95b38957b096ff630c3b5dcd49c88f3e5e9bf137b0d64f661903054c06c2",
     "mutations": {
       "defaults": [
         {
           "onCreate": {
-            "id": "timestampNow",
+            "id": "instantNow",
             "kind": "generator"
           },
           "onUpdate": {
-            "id": "timestampNow",
+            "id": "instantNow",
             "kind": "generator"
           },
           "ref": {
             "column": "updated_at",
-            "namespace": "__unbound__",
+            "namespace": "public",
             "table": "slips"
           }
         },
         {
           "onCreate": {
-            "id": "timestampNow",
+            "id": "instantNow",
             "kind": "generator"
           },
           "onUpdate": {
-            "id": "timestampNow",
+            "id": "instantNow",
             "kind": "generator"
           },
           "ref": {
             "column": "updated_at",
-            "namespace": "__unbound__",
+            "namespace": "public",
             "table": "users"
           }
         }
@@ -385,12 +386,21 @@
     }
   },
   "capabilities": {
-    "sql": {
-      "foreignKeys": true,
+    "postgres": {
+      "distinctOn": true,
       "jsonAgg": true,
+      "lateral": true,
       "limit": true,
       "orderBy": true,
       "returning": true
+    },
+    "sql": {
+      "checkConstraint": true,
+      "defaultInInsert": true,
+      "enums": true,
+      "lateral": true,
+      "returning": true,
+      "scalarList": true
     }
   },
   "extensions": {},

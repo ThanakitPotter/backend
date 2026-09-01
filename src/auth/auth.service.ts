@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto) {
-    const existingUser = await this.prisma.db.orm.User
+    const existingUser = await this.prisma.db.orm.public.User
       .where({ email: dto.email })
       .first();
 
@@ -35,7 +35,7 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, this.SALT_ROUNDS);
 
-    const user = await this.prisma.db.orm.User.create({
+    const user = await this.prisma.db.orm.public.User.create({
       id: crypto.randomUUID(),
       email: dto.email,
       password_hash: passwordHash,
@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.db.orm.User
+    const user = await this.prisma.db.orm.public.User
       .where({ email: dto.email })
       .first();
 
@@ -81,12 +81,12 @@ export class AuthService {
 
     const email = payload.email;
 
-    let user = await this.prisma.db.orm.User
+    let user = await this.prisma.db.orm.public.User
       .where({ email })
       .first();
 
     if (!user) {
-      user = await this.prisma.db.orm.User.create({
+      user = await this.prisma.db.orm.public.User.create({
         id: crypto.randomUUID(),
         email,
         password_hash: null,
