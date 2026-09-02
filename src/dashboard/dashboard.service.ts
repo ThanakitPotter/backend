@@ -31,10 +31,10 @@ export class DashboardService {
   }
 
   private async getAggregateForDate(userId: string, date: Date) {
-    const dateString = date.toISOString().split('T')[0];
+    const instant = (globalThis as any).Temporal.Instant.from(date.toISOString());
     const agg = await this.prisma.db.orm.public.Slip
       .where({ user_id: userId })
-      .where((slip) => slip.received_date.gte(new Date(dateString)))
+      .where((slip) => slip.received_date.gte(instant))
       .aggregate((a) => ({
         income: a.sum('income_amount'),
         tax: a.sum('tax_deducted'),

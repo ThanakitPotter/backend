@@ -21,7 +21,7 @@ export class SlipsService {
       user_id: userId,
       income_amount: Number(dto.income_amount),
       tax_deducted: Number(dto.tax_deducted),
-      received_date: new Date(dto.received_date),
+      received_date: (globalThis as any).Temporal.Instant.from(new Date(dto.received_date).toISOString()),
       slip_image_url: dto.slip_image_url,
     });
 
@@ -76,7 +76,7 @@ export class SlipsService {
       data.tax_deducted = Number(dto.tax_deducted);
     }
     if (dto.received_date !== undefined) {
-      data.received_date = new Date(dto.received_date);
+      data.received_date = (globalThis as any).Temporal.Instant.from(new Date(dto.received_date).toISOString());
     }
     if (dto.slip_image_url !== undefined) {
       data.slip_image_url = dto.slip_image_url;
