@@ -140,7 +140,7 @@ Return ONLY valid JSON matching this schema:
       income_amount: Number(dto.income_amount),
       tax_deducted: Number(dto.tax_deducted),
       received_date: (globalThis as any).Temporal.Instant.from(new Date(dto.received_date).toISOString()),
-      slip_image_url: dto.slip_image_url,
+      slip_image_url: dto.slip_image_url || '',
     });
 
     return slip;

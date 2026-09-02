@@ -1,9 +1,9 @@
 import {
   IsDateString,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
-  IsUrl,
   Min,
 } from 'class-validator';
 
@@ -20,6 +20,6 @@ export class CreateSlipDto {
   received_date: string;
 
   @IsString()
-  @IsUrl()
-  slip_image_url: string;
+  @IsOptional()
+  slip_image_url?: string;
 }

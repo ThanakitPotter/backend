@@ -25,6 +25,5 @@ export class UpdateSlipDto {
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   slip_image_url?: string;
 }
