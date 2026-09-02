@@ -59,26 +59,42 @@ export class SlipsService {
                 },
               },
               {
-                text: `You are an expert OCR & financial document parser specializing in Thai banking transfer slips (KBank / K+, SCB, Krungthai / Next, Bangkok Bank, GSB, Krungsri, Paotang / G-Wallet, TrueMoney), invoices, receipts, and 50 ทวิ withholding tax certificates.
+                text: `You are a universal, highly accurate OCR & financial document parser specializing in ALL Thai banks, e-wallets, payment services, and tax certificates.
 
-Analyze this Thai slip / document image and extract:
-1. income_amount: The main transaction amount, total payment amount, or transferred amount (number/float). E.g.
-   - For Paotang / G-Wallet: Use 'จำนวนเงินที่ชำระ' or 'ค่าสินค้า/บริการ'.
-   - For KBank / K+: Use 'จำนวน'.
-   - For Krungthai / SCB / other banks: Use 'จำนวนเงิน' or 'จำนวนเงิน (บาท)'.
-   Remove any commas, 'บาท', or non-numeric characters.
-2. tax_deducted: The withholding tax amount (ภาษีหัก ณ ที่จ่าย). If standard transfer slip / bill payment with no withholding tax, return 0.
-3. received_date: The transaction date formatted strictly as YYYY-MM-DD.
-   - Thai month abbreviations mapping:
-     ม.ค. -> 01, ก.พ. -> 02, มี.ค. -> 03, เม.ย. -> 04, พ.ค. -> 05, มิ.ย. -> 06,
-     ก.ค. -> 07, ส.ค. -> 08, ก.ย. -> 09, ต.ค. -> 10, พ.ย. -> 11, ธ.ค. -> 12.
-   - Thai Buddhist Era conversion:
-     2569 or 69 -> 2026
-     2568 or 68 -> 2025
-     2567 or 67 -> 2024
-     Example: "1 ก.ย. 2569" -> "2026-09-01", "11 ก.ค. 69" -> "2026-07-11", "30 ส.ค. 2569" -> "2026-08-30".
+Supported Banks & Providers:
+1. Kasikornbank (กสิกรไทย / KBank / K+)
+2. Siam Commercial Bank (ไทยพาณิชย์ / SCB / SCB EASY)
+3. Krungthai Bank (กรุงไทย / Krungthai NEXT / เป๋าตัง Paotang / ถุงเงิน / G-Wallet)
+4. Bangkok Bank (กรุงเทพ / Bualuang mBanking)
+5. TMBThanachart (ทีทีบี / ttb / ttb touch)
+6. Bank of Ayudhya (กรุงศรี / Krungsri / KMA)
+7. Government Savings Bank (ออมสิน / GSB / MyMo)
+8. BAAC (ธ.ก.ส. / BAAC Mobile / A-Mobile)
+9. UOB (ยูโอบี / UOB TMRW)
+10. CIMB Thai (ซีไอเอ็มบี ไทย)
+11. Kiatnakin Phatra (เกียรตินาคินภัทร / KKP / Dime)
+12. TISCO (ทิสโก้)
+13. Land and Houses Bank (แลนด์ แอนด์ เฮ้าส์ / LHB You)
+14. Government Housing Bank (ธอส. / GHB ALL)
+15. TrueMoney Wallet (ทรูมันนี่)
+16. ShopeePay & PromptPay (พร้อมเพย์)
+17. Withholding Tax Form (หนังสือรับรองการหักภาษี ณ ที่จ่าย / 50 ทวิ)
+18. Invoices, Bills & Receipts (ใบเสร็จรับเงิน / ใบกำกับภาษี / สลิปจ่ายบิล)
 
-Return ONLY JSON:
+Instructions:
+1. income_amount (number/float):
+   - Locate the primary transaction amount / total paid / transfer amount (e.g. 'จำนวนเงิน', 'จำนวน', 'ค่าสินค้า/บริการ', 'จำนวนเงินที่ชำระ', 'ยอดเงิน', 'Amount', 'Total').
+   - Remove any commas, 'บาท', 'THB', or non-numeric characters. E.g. '1,500.00 บาท' -> 1500.00.
+2. tax_deducted (number/float):
+   - If this is a 50 ทวิ (withholding tax certificate), extract the withholding tax amount (ภาษีหัก ณ ที่จ่าย / จำนวนเงินภาษีที่หักและนำส่ง).
+   - If this is a regular bank transfer slip or bill payment without withholding tax, set tax_deducted to 0.
+3. received_date (string strictly YYYY-MM-DD):
+   - Extract the transaction/payment date.
+   - Convert Thai Buddhist Era (พ.ศ.) to Christian Era (ค.ศ.): e.g., 2569 or 69 -> 2026, 2568 or 68 -> 2025, 2567 or 67 -> 2024.
+   - Convert Thai month abbreviations: ม.ค.->01, ก.พ.->02, มี.ค.->03, เม.ย.->04, พ.ค.->05, มิ.ย.->06, ก.ค.->07, ส.ค.->08, ก.ย.->09, ต.ค.->10, พ.ย.->11, ธ.ค.->12.
+   - Example: '11 ก.ค. 69' -> '2026-07-11', '1 ก.ย. 2569' -> '2026-09-01', '30 ส.ค. 2569' -> '2026-08-30'.
+
+Return ONLY valid JSON matching this schema:
 {
   "income_amount": 0.00,
   "tax_deducted": 0.00,
