@@ -236,13 +236,22 @@ Return ONLY valid JSON matching this schema:
   async getPresignedImageUrl(userId: string, slipId: string) {
     const slip = await this.findOne(userId, slipId);
 
+    // If it's a base64 Data URI or direct http URL, return it directly
+    if (slip.slip_image_url && (slip.slip_image_url.startsWith('data:image/') || slip.slip_image_url.startsWith('http'))) {
+      return {
+        slip_id: slipId,
+        presigned_url: slip.slip_image_url,
+        expires_at: new Date(Date.now() + 86400000).toISOString(),
+      };
+    }
+
     // Mock: simulate a pre-signed URL with expiry timestamp
     const expiresAt = new Date(Date.now() + 3600 * 1000); // 1 hour from now
     const mockSignature = Buffer.from(`${slipId}:${expiresAt.toISOString()}`)
       .toString('base64url');
 
     const presignedUrl =
-      `https://tax-summary-bucket.s3.amazonaws.com/${encodeURIComponent(slip.slip_image_url)}` +
+      `https://tax-summary-bucket.s3.amazonaws.com/${encodeURIComponent(slip.slip_image_url || 'slip.png')}` +
       `?X-Amz-Expires=3600` +
       `&X-Amz-Signature=${mockSignature}` +
       `&X-Amz-Date=${expiresAt.toISOString()}`;
