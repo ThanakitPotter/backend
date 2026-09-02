@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { SlipsService } from './slips.service.js';
 import { CreateSlipDto } from './dto/create-slip.dto.js';
 import { UpdateSlipDto } from './dto/update-slip.dto.js';
+import { AnalyzeSlipDto } from './dto/analyze-slip.dto.js';
 
 /**
  * All endpoints are protected by JwtAuthGuard.
@@ -24,6 +25,11 @@ import { UpdateSlipDto } from './dto/update-slip.dto.js';
 @UseGuards(JwtAuthGuard)
 export class SlipsController {
   constructor(private readonly slipsService: SlipsService) {}
+
+  @Post('analyze')
+  analyze(@Body() dto: AnalyzeSlipDto) {
+    return this.slipsService.analyzeSlip(dto.imageBase64);
+  }
 
   @Post()
   create(@Request() req: any, @Body() dto: CreateSlipDto) {

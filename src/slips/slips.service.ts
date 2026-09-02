@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
+import { GoogleGenAI } from '@google/genai';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateSlipDto } from './dto/create-slip.dto.js';
 import { UpdateSlipDto } from './dto/update-slip.dto.js';
@@ -11,6 +12,92 @@ import { UpdateSlipDto } from './dto/update-slip.dto.js';
 @Injectable()
 export class SlipsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Analyze slip image using Google Gemini AI to automatically extract:
+   * - income_amount
+   * - tax_deducted
+   * - received_date
+   */
+  async analyzeSlip(imageBase64: string) {
+    let cleanBase64 = imageBase64;
+    let mimeType = 'image/jpeg';
+
+    if (imageBase64.includes(';base64,')) {
+      const parts = imageBase64.split(';base64,');
+      const mimeMatch = parts[0].match(/data:(.*?)$/);
+      if (mimeMatch) {
+        mimeType = mimeMatch[1];
+      }
+      cleanBase64 = parts[1];
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      const today = new Date().toISOString().split('T')[0];
+      return {
+        income_amount: 0,
+        tax_deducted: 0,
+        received_date: today,
+        ai_detected: false,
+        message: 'GEMINI_API_KEY is not set.',
+      };
+    }
+
+    try {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                inlineData: {
+                  mimeType,
+                  data: cleanBase64,
+                },
+              },
+              {
+                text: `You are an AI document analysis specialist for Thai bank transfer slips, payment receipts, invoices, and withholding tax certificates (หนังสือรับรองการหักภาษี ณ ที่จ่าย / 50 ทวิ).
+Carefully read and extract the financial data from this image:
+1. income_amount: The main transaction amount, total payment amount, or income before tax (float/number).
+2. tax_deducted: The withholding tax amount (ภาษีหัก ณ ที่จ่าย). If it is a normal transfer slip with no withholding tax, return 0.
+3. received_date: The date of the slip/transaction in ISO format YYYY-MM-DD (e.g., "2026-09-02"). If the year is in Thai Buddhist Era (เช่น 2567, 2568, 2569), convert to Christian Year (2024, 2025, 2026). If date cannot be identified, use current date.
+
+Respond ONLY with valid JSON with NO markdown ticks or extra text:
+{
+  "income_amount": 0.00,
+  "tax_deducted": 0.00,
+  "received_date": "YYYY-MM-DD"
+}`,
+              },
+            ],
+          },
+        ],
+      });
+
+      const responseText = response.text?.trim() || '{}';
+      const jsonStr = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+      const parsed = JSON.parse(jsonStr);
+
+      return {
+        income_amount: Number(parsed.income_amount) || 0,
+        tax_deducted: Number(parsed.tax_deducted) || 0,
+        received_date: parsed.received_date || new Date().toISOString().split('T')[0],
+        ai_detected: true,
+      };
+    } catch (err: any) {
+      console.error('Gemini slip analysis error:', err);
+      return {
+        income_amount: 0,
+        tax_deducted: 0,
+        received_date: new Date().toISOString().split('T')[0],
+        ai_detected: false,
+        error: err.message,
+      };
+    }
+  }
 
   /**
    * Create a new slip, scoped to the authenticated user.
