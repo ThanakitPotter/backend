@@ -7,9 +7,28 @@ model User {
   created_at    DateTime    @default(now())
   updated_at    temporal.updatedAt()
 
-  slips Slip[]
+  slips    Slip[]
+  expenses Expense[]
 
   @@map("users")
+}
+
+model Expense {
+  id                String      @id
+  user_id           String
+  amount            Float
+  vat_amount        Float       @default(0)
+  merchant_name     String?
+  category          String?
+  receipt_date      DateTime
+  receipt_image_url String
+  created_at        DateTime    @default(now())
+  updated_at        temporal.updatedAt()
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("expenses")
 }
 
 model Slip {

@@ -24,21 +24,43 @@ export class DashboardService {
     ]);
 
     return {
-      weekly: { income: weekly.income?.toString() ?? '0', tax: weekly.tax?.toString() ?? '0' },
-      monthly: { income: monthly.income?.toString() ?? '0', tax: monthly.tax?.toString() ?? '0' },
-      yearly: { income: yearly.income?.toString() ?? '0', tax: yearly.tax?.toString() ?? '0' },
+      weekly,
+      monthly,
+      yearly,
     };
   }
 
   private async getAggregateForDate(userId: string, date: Date) {
     const instant = (globalThis as any).Temporal.Instant.from(date.toISOString());
-    const agg = await this.prisma.db.orm.public.Slip
+    
+    const slipAgg = await this.prisma.db.orm.public.Slip
       .where({ user_id: userId })
       .where((slip) => slip.received_date.gte(instant))
       .aggregate((a) => ({
         income: a.sum('income_amount'),
         tax: a.sum('tax_deducted'),
       }));
-    return agg;
+
+    const expenseAgg = await this.prisma.db.orm.public.Expense
+      .where({ user_id: userId })
+      .where((exp) => exp.receipt_date.gte(instant))
+      .aggregate((a) => ({
+        amount: a.sum('amount'),
+        vat: a.sum('vat_amount'),
+      }));
+
+    const income = slipAgg.income ?? 0;
+    const tax = slipAgg.tax ?? 0;
+    const expense = expenseAgg.amount ?? 0;
+    const vat = expenseAgg.vat ?? 0;
+    const net_profit = income - expense - tax;
+
+    return {
+      income: income.toString(),
+      tax: tax.toString(),
+      expense: expense.toString(),
+      vat: vat.toString(),
+      net_profit: net_profit.toString(),
+    };
   }
 }
