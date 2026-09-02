@@ -86,8 +86,9 @@ Instructions:
    - Locate the primary transaction amount / total paid / transfer amount (e.g. 'จำนวนเงิน', 'จำนวน', 'ค่าสินค้า/บริการ', 'จำนวนเงินที่ชำระ', 'ยอดเงิน', 'Amount', 'Total').
    - Remove any commas, 'บาท', 'THB', or non-numeric characters. E.g. '1,500.00 บาท' -> 1500.00.
 2. tax_deducted (number/float):
-   - If this is a 50 ทวิ (withholding tax certificate), extract the withholding tax amount (ภาษีหัก ณ ที่จ่าย / จำนวนเงินภาษีที่หักและนำส่ง).
-   - If this is a regular bank transfer slip or bill payment without withholding tax, set tax_deducted to 0.
+   - If this document explicitly states withholding tax (ภาษีหัก ณ ที่จ่าย / หักภาษี / Withholding Tax / 50 ทวิ), extract that exact numeric amount.
+   - If it is a service payment, contractor fee, or business transfer without explicit tax specified, calculate standard Thai withholding tax for services at 3% of income_amount (income_amount * 0.03 rounded to 2 decimals).
+   - If it is a pure personal fund transfer or discount with no tax, return 0.00.
 3. received_date (string strictly YYYY-MM-DD):
    - Extract the transaction/payment date.
    - Convert Thai Buddhist Era (พ.ศ.) to Christian Era (ค.ศ.): e.g., 2569 or 69 -> 2026, 2568 or 68 -> 2025, 2567 or 67 -> 2024.
