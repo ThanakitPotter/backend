@@ -1,12 +1,17 @@
 import { Temporal } from '@js-temporal/polyfill';
 (globalThis as any).Temporal = Temporal;
 
+import { json, urlencoded } from 'express';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Increase payload limit to 50mb for image uploads
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ extended: true, limit: '50mb' }));
 
   // Enable CORS for frontend integration
   app.enableCors();
